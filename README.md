@@ -1,6 +1,4 @@
-PHP-IMAGE-UPLOAD-USING-NGINX-PHP8.3-S3-AND-EC2
-
-Author: Sudarshan Dattatray Bhosale
+# 🌐 PHP-IMAGE-UPLOAD-USING-NGINX-PHP8.3-S3-AND-EC2
 
 Project Type: AWS Cloud | Web Application | Image Upload System
 
@@ -8,33 +6,31 @@ Version: 1.0
 
 License: MIT
 
-🌐 Project Overview
-👤 About the Author
+## 🌐 Project Overview
 
-Name: Sudarshan Dattatray Bhosale
+ 
+## 👤 About the Author
 
-Education: Bachelor of Computer Applications (BCA), Shivaji University
-
-Project Experience: Online Bus Ticket Booking System (PHP & MySQL)
-
-Skills: AWS, EC2, S3, NGINX, PHP, MySQL, Linux, Cloud & DevOps
-
-Career Goal: Cloud / DevOps Engineer
+- Name: Sudarshan Dattatray Bhosale
+- Education: Bachelor of Computer Applications (BCA), Shivaji University
+- Project Experience: Online Bus Ticket Booking System (PHP & MySQL)
+- Skills: AWS, EC2, S3, NGINX, PHP, MySQL, Linux, Cloud & DevOps
+- Career Goal: Cloud / DevOps Engineer
 
 This repository demonstrates how to create a PHP 8.3 Image Upload Project using:
 
-✔ EC2 (App Server)
-✔ EC2 (DB Server – optional)
-✔ NGINX
-✔ Amazon S3 for image storage
-✔ AWS PHP SDK
+- ✔ EC2 (App Server)
+- ✔ EC2 (DB Server – optional)
+- ✔ NGINX
+- ✔ Amazon S3 for image storage
+- ✔ AWS PHP SDK
 
 🔹 Goal: Upload images from PHP and store them in S3
 🔹 Tools Used: EC2, S3, PHP 8.3, NGINX, AWS SDK
 
-##🧩 Architecture
+## 🧩 Architecture
 
----
+```
 +------------------------+         +--------------------------+
 |      EC2 App Server    |  --->   |     Amazon S3 Bucket     |
 | NGINX + PHP 8.3 + SDK  |         |   Image Storage System   |
@@ -46,47 +42,49 @@ This repository demonstrates how to create a PHP 8.3 Image Upload Project using:
 |      EC2 DB Server      |
 |   MySQL / MariaDB       |
 +-------------------------+
----
+```
 
-⚙️ Tech Stack
+## ⚙️ Tech Stack
+
 Component	Description
-☁️ AWS EC2	App server running PHP & NGINX
-🔐 AWS S3	Image storage bucket
-🌐 NGINX	Web server for PHP
-🐘 PHP 8.3	Backend scripting
-🗄️ MySQL (Optional)	Store metadata (filename, link)
-🚀 Step-by-Step Setup
-📌 Step 1 — Launch EC2 App Server & Install PHP 8.3 + NGINX
+- ☁️ AWS EC2	App server running PHP & NGINX
+- 🔐 AWS S3	Image storage bucket
+- 🌐 NGINX	Web server for PHP
+- 🐘 PHP 8.3	Backend scripting
+- 🗄️ MySQL (Optional)	Store metadata (filename, link)
+- 🚀 Step-by-Step Setup
+
+### 📌 Step 1 — Launch EC2 App Server & Install PHP 8.3 + NGINX
 
 Update system:
-
+```
 sudo apt update -y
-
+```
 
 Install NGINX:
-
+```
 sudo apt install nginx -y
-
+```
 
 Install PHP 8.3:
-
+```
 sudo apt install php8.3 php8.3-fpm php8.3-cli php8.3-curl php8.3-mbstring unzip curl -y
-
+```
 
 Start services:
-
+```
 sudo systemctl start nginx
 sudo systemctl enable nginx
-
-📌 Step 2 — Configure NGINX for PHP
+```
+### 📌 Step 2 — Configure NGINX for PHP
 
 Edit config:
-
+```
 sudo nano /etc/nginx/sites-available/default
-
+```
 
 Paste:
-
+```
 server {
     listen 80;
     server_name _;
@@ -104,136 +102,206 @@ server {
     }
 }
 
-
+```
 Restart NGINX:
-
+```
 sudo systemctl restart nginx
-
-📌 Step 3 — Install AWS SDK for PHP
+```
+### 📌 Step 3 — Install AWS SDK for PHP
+```
 cd /var/www/html
 composer require aws/aws-sdk-php
+```
+### 📌 Step 4 — Configure Amazon S3 Bucket
 
-📌 Step 4 — Configure Amazon S3 Bucket
+- ✔ Create S3 bucket
+- ✔ Enable public read (optional)
+- ✔ Create IAM User
+- ✔ Assign: AmazonS3FullAccess
+- ✔ Collect Access Key + Secret Key
 
-✔ Create S3 bucket
-✔ Enable public read (optional)
-✔ Create IAM User
-✔ Assign: AmazonS3FullAccess
-✔ Collect Access Key + Secret Key
-
-📌 Step 5 — Create PHP Upload Code
+### 📌 Step 5 — Create PHP Upload Code
 upload.php
+```
 <?php
 require 'vendor/autoload.php';
 use Aws\S3\S3Client;
-use Aws\Exception\AwsException;
-
-$bucketName = 'your-bucket-name';
-$awsRegion = 'us-east-1';
-
+// Instantiate an Amazon S3 client.
 $s3Client = new S3Client([
-    'version' => 'latest',
-    'region'  => $awsRegion,
-    'credentials' => [
-        'key'    => 'YOUR_AWS_ACCESS_KEY',
-        'secret' => 'YOUR_AWS_SECRET_KEY'
-    ]
+'version' => 'latest',
+'region'  => 'us-east-1'
+//'credentials' => [
+//'key'    => ' AKIAR3KPMGMSXLXA5HXI ',     //Add your access key here
+//'secret' => ' yH0f0bFXWZYubCWGI8uy+BObnbqZuam1h2H2bXov'  //Add your secret key here
+//]
 ]);
+// Check if the form was submitted
+if($_SERVER["REQUEST_METHOD"] == "POST"){
+// Check if file was uploaded without errors
+if(isset($_FILES["anyfile"]) && $_FILES["anyfile"]["error"] == 0){
+$allowed = array("jpg" => "image/jpg", "jpeg" => "image/jpeg", "gif" => "image/gif", "png" => "i>$filename = $_FILES["anyfile"]["name"];
+$filetype = $_FILES["anyfile"]["type"];
 
-if(isset($_FILES['image'])){
-    $file = $_FILES['image'];
-    $fileName = basename($file['name']);
-    $fileTmpPath = $file['tmp_name'];
+$filesize = $_FILES["anyfile"]["size"];
+// Validate file extension
+$ext = pathinfo($filename, PATHINFO_EXTENSION);
 
-    try {
-        $result = $s3Client->putObject([
-            'Bucket' => $bucketName,
-            'Key'    => $fileName,
-            'SourceFile' => $fileTmpPath,
-            'ACL'    => 'public-read'
-        ]);
-        echo "Image uploaded successfully. <a href='{$result['ObjectURL']}'>View Image</a>";
-    } catch (AwsException $e) {
-        echo "Error uploading image: " . $e->getMessage();
-    }
+ 
+
+if(!array_key_exists($ext, $allowed)) die("Error: Please select a valid file format.");
+// Validate file size - 10MB maximum
+$maxsize = 10 * 1024 * 1024;
+if($filesize > $maxsize) die("Error: File size is larger than the allowed limit.");
+// Validate type of the file
+if(in_array($filetype, $allowed)){
+// Check whether file exists before uploading it
+if(file_exists("uploads/" . $filename)){
+echo $filename . " is already exists.";
+} else{
+if(move_uploaded_file($_FILES["anyfile"]["tmp_name"], "uploads/" . $filename)){
+$bucket = 'mybucket-19-11-25';              //Add your bucket name here
+$file_Path = __DIR__ . '/uploads/'. $filename;
+$key = basename($file_Path);
+try {
+
+$result = $s3Client->putObject([
+'Bucket' => $bucket,
+'Key'    => $key,
+'Body'   => fopen($file_Path, 'r'),
+'ACL'    => 'public-read', // make file 'public'
+]);
+echo "Image uploaded successfully. Image path is: ". $result->get('ObjectURL');
+
+ 
+
+$urls3= $result->get('ObjectURL') ;
+//$cfurl= str_replace("https://vsb17.s3.amazonaws.com","https://d1lspta3i8hms0.cloudfront.net", >//echo $cfurl;
+$name=$_POST["name"];
+$servername = "172.31.69.87";
+$username = "swati";
+$password = "Swati@123";
+$dbname = "facebook";
+// Create connection
+$conn = mysqli_connect($servername, $username, $password, $dbname);
+
+// Check connection
+if (!$conn) {
+  die("Connection failed: " . mysqli_connect_error());
+}
+$sql = "INSERT INTO posts(name,url) VALUES('$name','$urls3')";
+if (mysqli_query($conn, $sql)) {
+  echo "New record created successfully";
+} else {
+  echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+}
+
+ 
+
+mysqli_close($conn);
+
+ 
+
+ 
+
+} catch (Aws\S3\Exception\S3Exception $e) {
+echo "There was an error uploading the file.\n";
+echo $e->getMessage();
+}
+echo "Your file was uploaded successfully.";
+}else{
+echo "File is not uploaded";
+}
+}
+} else{
+echo "Error: There was a problem uploading your file. Please try again.";
+}
+} else{
+echo "Error: " . $_FILES["anyfile"]["error"];
+}
 }
 ?>
 
-index.html
+
+
+
+
+```
+form.html
+```
+
 <!DOCTYPE html>
 <html>
-<head>
-    <title>Image Upload</title>
-</head>
 <body>
-    <h2>Upload Image to S3</h2>
-    <form action="upload.php" method="POST" enctype="multipart/form-data">
-        <input type="file" name="image" required>
-        <button type="submit">Upload</button>
-    </form>
-</body>
-</html>
+ 
+ 
+        <form action="upload.php" method="post" enctype="multipart/form-data">
+Name:<input type="text" id="name" name="name">
+            Select image to upload:
+<input type="file" name="anyfile" id="anyfile">
+<input type="submit" value="Upload Image" name="submit">
+</form>
 
-📌 Step 6 — (Optional) Setup EC2 Database Server
+```
+### 📌 Step 6 — (Optional) Setup EC2 Database Server
 
 Install MySQL:
-
+```
 sudo apt update
 sudo apt install mariadb-server -y
 
-
+```
 Create DB + Table:
+```
+CREATE DATABASE facebook;
+```
+USE facebook;
+```
 
-CREATE DATABASE image_upload;
-USE image_upload;
-
-CREATE TABLE files (
+```
+CREATE TABLE posts (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    filename VARCHAR(255),
+    name VARCHAR(255),
     url TEXT
 );
-
-📁 Folder Structure
+```
+## 📁 Folder Structure
+```
 PHP-IMAGE-UPLOAD-USING-NGINX-PHP8.3-S3-AND-EC2/
 │
-├── index.html
+├── form.html
 ├── upload.php
-├── vendor/              # AWS SDK
-├── composer.json
 ├── README.md
 └── images/              # Screenshots (add manually)
+```
+## 📸 Recommended Screenshots
 
-📸 Recommended Screenshots
+- ✔ NGINX running
+- ✔ S3 bucket configuration
+- ✔ EC2 instance details
+- ✔ Image successfully uploaded
+- ✔ Output of AWS S3 URL
 
-✔ NGINX running
-✔ S3 bucket configuration
-✔ EC2 instance details
-✔ Image successfully uploaded
-✔ Output of AWS S3 URL
+## 🧠 Common Issues & Fixes
 
-🧠 Common Issues & Fixes
 Issue	Reason	Fix
-❌ 403 Access Denied	Wrong IAM policy	Add AmazonS3FullAccess
-❌ Upload fails	Wrong bucket region	Use same region in SDK
-❌ PHP not executing	NGINX config missing	Check fastcgi path
-❌ File empty	Missing enctype	Add multipart/form-data
-🧾 Summary
+- ❌ 403 Access Denied	Wrong IAM policy	Add AmazonS3FullAccess
+- ❌ Upload fails	Wrong bucket region	Use same region in SDK
+- ❌ PHP not executing	NGINX config missing	Check fastcgi path
+- ❌ File empty	Missing enctype	Add multipart/form-data
 
-✔ Installed PHP 8.3 + NGINX
-✔ Created S3 bucket
-✔ Added AWS SDK
-✔ Developed upload form
-✔ Stored images in S3
-✔ (Optional) Stored metadata in DB
+## 🧾 Summary
 
-🌐 Connect with Me
+- ✔ Installed PHP 8.3 + NGINX
+- ✔ Created S3 bucket
+- ✔ Added AWS SDK
+- ✔ Developed upload form
+- ✔ Stored images in S3
+- ✔ (Optional) Stored metadata in DB
 
-👨‍💻 Sudarshan Dattatray Bhosale
+## 🌐 Connect with Me
 
-💼 Cloud & DevOps Enthusiast
-
-🎓 BCA Graduate — Shivaji University
-
-🔗 LinkedIn: https://www.linkedin.com/in/sudarshan-bhosale-174477374
-
-🔗 GitHub: https://github.com/Sudarshan-Bhosale145
+- 👨‍💻 Sudarshan Dattatray Bhosale
+- 💼 Cloud & DevOps Enthusiast
+- 🎓 BCA Graduate — Shivaji University
+- 🔗 LinkedIn: https://www.linkedin.com/in/sudarshan-bhosale-174477374
+- 🔗 GitHub: https://github.com/Sudarshan-Bhosale145
